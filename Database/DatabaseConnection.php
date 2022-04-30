@@ -6,7 +6,6 @@ use mysqli;
 use Settings\DotEnv;
 require_once('Settings/DotEnv.php');
 
-
 class DatabaseConnection {
 	/** @var string Database host     */  private string $db_host;
 	/** @var string Database username */  private string $db_username;
