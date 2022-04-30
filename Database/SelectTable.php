@@ -27,3 +27,6 @@
 		}
 
 	}
+
+$k = new SelectTable();
+	print_r($k->selectData("users"));
