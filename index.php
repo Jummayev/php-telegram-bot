@@ -55,16 +55,22 @@
 		if ($user && $user['lang'] !== NULL ) {
 			$lang = $user['lang'];
 			include('langs/'. $lang . '.php');
+			$main_menu = [
+				'resize_keyboard' => TRUE,
+				[['text' => $langArray['change_user_data_button']], ['text' => $langArray['change_user_language_button']]],
+			];
 			if ($text === '/start') {
 				bot('sendMessage', [
 					'chat_id' => $chat_id,
 					'text' => $langArray['start'],
 					'parse_mode' => 'html',
-					'reply_markup' => $language_menu,
+					'reply_markup' => $main_menu,
 				]);
 			}
 		}else {
-			(new InsertData)->inserUser('user_id', $chat_id);
+			if(!$user){
+				(new InsertData)->inserUser('user_id', $chat_id);
+			}
 			if ($text === '/start') {
 				bot('sendMessage', [
 					'chat_id' => $chat_id,
