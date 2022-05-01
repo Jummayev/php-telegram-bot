@@ -1,57 +1,76 @@
 <?php
-	use Database\DatabaseConnection;
 
-	const BOT_TOKEN = '5316514399:AAGtzidXFV6bs3tDy8r3yOwGA4jmbb4lj38';
+	$token = '5176679796:AAHC7oOGh3Z_Hh67maGft7K_aVGJ1oE7C_Y';
+
 	/**
-	 * @param $method
-	 * @param $data
+	 * @param       $method
+	 * @param array $data
 	 * @return mixed|void
-	 * @throws \Exception
+	 * @throws \JsonException
 	 */
-	function bot($method,$data=[]){
-		if ( !BOT_TOKEN){
-			throw new \RuntimeException("\n========== ".\date('Y-m-d h:i:s a')." ========== \n Please enter your bot token");
+	function bot($method, array $data = []) {
+		global $token;
+		$url = 'https://api.telegram.org/bot'.$token.'/'.$method;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		$res = curl_exec($ch);
+		if (curl_error($ch)) {
+			var_dump(curl_error($ch));
+		} else {
+			return json_decode($res, FALSE, 512, JSON_THROW_ON_ERROR);
 		}
-
-	    $url = "https://api.telegram.org/bot".BOT_TOKEN."/".$method;
-	    $ch = curl_init();
-	    curl_setopt($ch,CURLOPT_URL,$url);
-	    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-	    curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
-	    $res = curl_exec($ch);
-	    if(curl_error($ch)){
-	        var_dump(curl_error($ch));
-	    }else{
-	        return json_decode($res, FALSE);
-	    }
 	}
 
-	$update = json_decode(file_get_contents('php://input'), FALSE);
-
+	try {
+		$update = json_decode(file_get_contents('php://input'), FALSE, 512, JSON_THROW_ON_ERROR);
+	} catch (JsonException $e) {
+		error_log("\n========== ".$date->format('Y-m-d H:i:s')." ========== \n Response error\n".$e->getMessage()."\n", 3, 'errors_bot.log');
+	}
 	$message = $update->message;
 	$chat_id = $message->chat->id;
+	$user1 = $message->from->username;
+	$text = $message->text;
 
-	$showData = new SelectTable();
-	$lang = 'en';
-	try {
-		$showUser = $showData->showData('users', "chat_id", $chat_id);
-		if ($showUser) {
-			$lang = $showUser['lang'];
-		}
-	} catch (Exception $e) {
-		$date = new DateTime(NULL, new DateTimeZone('Asia/Tashkent'));
-		error_log("\n========== ".$date->format('Y-m-d H:i:s')." ========== \nDatabase Connection Failed\n".$e->getMessage()."\n", 3, 'errors.log');
-	}
-	include('langs/'. $lang . '.php');
-
-	try {
-		bot('sendmessage', [
+	$menu = json_encode([
+		'resize_keyboard' => TRUE,
+		'keyboard' => [
+			[['text' => '🕋 Ramazon'], ['text' => '🕋 Juma']],
+			[['text' => "🎁 Tug'ulgan kun"], ['text' => '🎄Yangi Yil']],
+			[['text' => '🗞 News']],
+		]
+	], JSON_THROW_ON_ERROR);
+	$text = '/start';
+	if ($text == '/start') {
+		bot('sendMessage', [
 			'chat_id' => 1157219338,
-			'text' => $langArray['welcome'],
+			'text' => "Нима сотмокчисиз булимни танланг👇🏻 $user1",
+			'parse_mode' => 'html',
+			'reply_markup' => $menu,
 		]);
-	}catch (Exception  $e){
-		error_log($e->getMessage(), 3, 'errors.log');
 	}
+//	$showData = new SelectTable();
+//	$lang = 'en';
+//	try {
+//		$showUser = $showData->showData('users', "chat_id", $chat_id);
+//		if ($showUser) {
+//			$lang = $showUser['lang'];
+//		}
+//	} catch (Exception $e) {
+//		$date = new DateTime(NULL, new DateTimeZone('Asia/Tashkent'));
+//		error_log("\n========== ".$date->format('Y-m-d H:i:s')." ========== \nDatabase Connection Failed\n".$e->getMessage()."\n", 3, 'errors.log');
+//	}
+//	include('langs/'. $lang . '.php');
+//
+//	try {
+//		bot('sendmessage', [
+//			'chat_id' => 1157219338,
+//			'text' => $langArray['welcome'],
+//		]);
+//	}catch (Exception  $e){
+//		error_log($e->getMessage(), 3, 'errors.log');
+//	}
 
 	//	$mid = $message->message_id;
 //	$tx = $message->text;
