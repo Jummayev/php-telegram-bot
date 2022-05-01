@@ -1,5 +1,6 @@
 <?php
 
+	require_once("Database/SelectTable.php");
 	$token = '5176679796:AAHC7oOGh3Z_Hh67maGft7K_aVGJ1oE7C_Y';
 
 	/**
@@ -49,7 +50,7 @@
 	], JSON_THROW_ON_ERROR);
 	try {
 		$showUser = $showData->showData('users', "chat_id", $chat_id);
-		if ($showUser) {
+		if ($showUser && $showUser['lang'] === NULL ) {
 			$lang = $showUser['lang'];
 			include('langs/'. $lang . '.php');
 			if ($text === '/start') {
@@ -60,7 +61,8 @@
 					'reply_markup' => $language_menu,
 				]);
 			}
-		}else
+		}else {
+			(new InsertData)->inserUser(['user_id'], [$chat_id]);
 			if ($text === '/start') {
 				bot('sendMessage', [
 					'chat_id' => $chat_id,
@@ -68,6 +70,7 @@
 					'parse_mode' => 'html',
 					'reply_markup' => $language_menu,
 				]);
+			}
 		}
 	} catch (Exception $e) {
 		$date = new DateTime(NULL, new DateTimeZone('Asia/Tashkent'));
