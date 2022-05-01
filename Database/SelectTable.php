@@ -20,7 +20,7 @@
 		 * @return mixed
 		 * @throws \Exception
 		 */
-		public function showData($tableName, $columnName, $value) {
+		public function showData($tableName, $columnName, $value) : mixed {
 			$this->db_connect();
 			$sql = "SELECT * FROM $tableName WHERE $columnName = $value";
 			return $this->mysqli->query($sql);
