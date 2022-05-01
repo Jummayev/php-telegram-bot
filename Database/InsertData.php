@@ -8,8 +8,7 @@
 		 * @throws \Exception
 		 */
 		public function InserUser($chat_id, $value) {
-			$this->db_connect();
 			$sql = "INSERT INTO users ($chat_id) VALUES ($value)";
-			$this->mysqli->query($sql);
+			mysqli_query($this->db_connect(), $sql);
 		}
 	}

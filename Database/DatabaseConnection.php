@@ -23,11 +23,11 @@ class DatabaseConnection {
 
 	/**
 	 * Database connection
-	 * @return void
+	 * @return \mysqli|false
 	 * @throws \Exception
 	 */
-	public function db_connect() : void {
-		$this->mysqli = new mysqli($this->db_host, $this->db_username, $this->db_password, $this->db_databasename);
+	public function db_connect() : mysqli|bool {
+		return  mysqli_connect($this->db_host, $this->db_username, $this->db_password, $this->db_databasename);
 	}
 }
 

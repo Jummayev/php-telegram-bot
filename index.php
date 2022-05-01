@@ -49,9 +49,8 @@
 	], JSON_THROW_ON_ERROR);
 
 	try {
-		$this->db_connect();
-		$sql = "SELECT * FROM users WHERE 'user_id' = $chat_id";
-		$result =  $this->mysqli->query($sql);
+		$showUser = new SelectTable();
+		$result = $showUser->showData("users", "user_id", $chat_id);
 		$user = mysqli_fetch_array($result);
 		if ($user && $user['lang'] !== NULL ) {
 			$lang = $user['lang'];

@@ -8,7 +8,7 @@
 		 * @return void
 		 * @throws \Exception
 		 */
-		public function run() {
+		public function run() : void {
 			$this->createUsersTable();
 		}
 
@@ -17,9 +17,7 @@
 		 * @return void
 		 * @throws \Exception
 		 */
-		private function createUsersTable()
-		{
-			$this->db_connect();
+		private function createUsersTable() : void {
 			$sql = "CREATE TABLE users (
     					id INT(15) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     					full_name VARCHAR(255),
@@ -28,7 +26,7 @@
     					lang VARCHAR(2) NULL,
     					reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )";
-			$this->mysqli->query($sql);
+			mysqli_query($this->db_connect(), $sql);
 			echo 'create users table successfully';
 		}
 	}
