@@ -1,6 +1,7 @@
 <?php
 
 	require_once("Database/SelectTable.php");
+	require_once('Database/InsertData.php');
 	$token = '5176679796:AAHC7oOGh3Z_Hh67maGft7K_aVGJ1oE7C_Y';
 
 	/**
@@ -39,19 +40,21 @@
 	$user_username = $message->from->username;
 	$chat_first_name = $message->chat->first_name;
 
-	$showData = new SelectTable();
 	$lang = 'uz';
-
 	$language_menu = json_encode([
 		'resize_keyboard' => TRUE,
 		'keyboard' => [
 			[['text' => 'Ru'], ['text' => '🇺🇿O\'zbekcha']],
 		],
 	], JSON_THROW_ON_ERROR);
+
 	try {
-		$showUser = $showData->showData('users', "chat_id", $chat_id);
-		if ($showUser && $showUser['lang'] === NULL ) {
-			$lang = $showUser['lang'];
+		$this->db_connect();
+		$sql = "SELECT * FROM users WHERE 'user_id' = $chat_id";
+		$result =  $this->mysqli->query($sql);
+		$user = mysqli_fetch_array($result);
+		if ($user && $user['lang'] !== NULL ) {
+			$lang = $user['lang'];
 			include('langs/'. $lang . '.php');
 			if ($text === '/start') {
 				bot('sendMessage', [
@@ -62,7 +65,7 @@
 				]);
 			}
 		}else {
-			(new InsertData)->inserUser(['user_id'], [$chat_id]);
+			(new InsertData)->inserUser('user_id', $chat_id);
 			if ($text === '/start') {
 				bot('sendMessage', [
 					'chat_id' => $chat_id,

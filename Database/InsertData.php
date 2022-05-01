@@ -7,8 +7,9 @@
 		/**
 		 * @throws \Exception
 		 */
-		public function InserUser($column = [], $value = []) {
+		public function InserUser($chat_id, $value) {
 			$this->db_connect();
-			$sql = "INSERT INTO users ($column) VALUES ($value)";
+			$sql = "INSERT INTO users ($chat_id) VALUES ($value)";
+			$this->mysqli->query($sql);
 		}
 	}

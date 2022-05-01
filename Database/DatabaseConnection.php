@@ -4,7 +4,7 @@ namespace Database;
 
 use mysqli;
 use Settings\DotEnv;
-require_once('Settings/DotEnv.php');
+require_once('../Settings/DotEnv.php');
 
 class DatabaseConnection {
 	/** @var string Database host     */  private string $db_host;
